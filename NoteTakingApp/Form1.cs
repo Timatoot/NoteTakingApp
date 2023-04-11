@@ -1,4 +1,5 @@
 using System;
+using System.Diagnostics;
 using System.Linq.Expressions;
 using System.Windows.Forms;
 using Newtonsoft.Json;
@@ -101,6 +102,33 @@ namespace NoteTakingApp
                 NoteTitle.Text = null;
                 currText = null;
             }
+        }
+
+        /*void DeleteNote_Click(object sender, EventArgs e)
+        {
+            if (noteNum > 0)
+            {
+                this.Controls.Remove(note);
+                File.Delete($"Note{noteNum - 1}.json");
+                noteNum--;
+            }
+        }*/
+
+        private void UpdateNote()
+        {
+            for (int i = 0; i < noteNum; i++)
+            {
+                string fileText = File.ReadAllText($"Note{i}.json");
+                if (fileText != note.Text)
+                {
+                    string json = JsonConvert.SerializeObject(note.Text);
+                    File.WriteAllText($"Note{i}.json", json);
+                }
+            }
+        }
+        private void Form1_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            UpdateNote();
         }
     }
 }

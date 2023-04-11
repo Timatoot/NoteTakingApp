@@ -63,6 +63,7 @@
             this.ClientSize = new System.Drawing.Size(900, 600);
             this.Controls.Add(this.NoteTitle);
             this.Controls.Add(this.AddNote);
+            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.Form1_FormClosing);
             this.Name = "Form1";
             this.ResumeLayout(false);
             this.PerformLayout();
