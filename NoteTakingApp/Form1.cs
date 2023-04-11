@@ -1,5 +1,6 @@
 using System;
 using System.Linq.Expressions;
+using System.Windows.Forms;
 using Newtonsoft.Json;
 
 namespace NoteTakingApp
@@ -11,12 +12,13 @@ namespace NoteTakingApp
 
         TextBox note;
 
+        const int MAX_NOTES = 20;
+
         int[,] initialNoteCoords = 
         {
-            { 50, 150 }, { 450, 150 }
+            { 50, 200 }, { 450, 200 }
         };
 
-        int noteWidth = 350;
         int noteHeight = 350;
         
         int noteNum = 0;
@@ -25,11 +27,12 @@ namespace NoteTakingApp
         int rightNoteNum = 0;
         int leftNoteNum = 0;
 
-
+        int width;
 
         public Form1()
         {
             InitializeComponent();
+            width = ClientSize.Width;
             CheckNoteFile();
         }
 
@@ -38,13 +41,13 @@ namespace NoteTakingApp
             int calcPos;
             if (side == 0)
             {
-                calcPos = initialNoteCoords[side, dir] + (noteHeight * leftNoteNum) + 50;
+                calcPos = initialNoteCoords[side, dir] + ((noteHeight + 50) * leftNoteNum);
                 leftNoteNum++;
                 return calcPos;
             }
             else
             {
-                calcPos = initialNoteCoords[side, dir] + (noteHeight * rightNoteNum) + 50;
+                calcPos = initialNoteCoords[side, dir] + ((noteHeight + 50) * rightNoteNum);
                 rightNoteNum++;
                 return calcPos;
             }
@@ -56,7 +59,7 @@ namespace NoteTakingApp
             note.Text = text;
             note.Location = (noteNum % 2 == 0) ? new Point(initialNoteCoords[0, 0], CalculateNotePosition(1, 0)) 
                 : new Point(initialNoteCoords[1, 0], CalculateNotePosition(1, 1));
-            note.Size = new Size(noteWidth, noteHeight);
+            note.Size = new Size(width / 2 - 100, noteHeight);
             note.Anchor = (noteNum % 2 == 0) ? leftNoteAnchor : rightNoteAnchor;
             note.Multiline = true;
             note.ScrollBars = ScrollBars.Vertical;
@@ -70,7 +73,7 @@ namespace NoteTakingApp
 
         private void CheckNoteFile()
         {
-            for (int i = 0; i <= 20; i++)
+            for (int i = 0; i <= MAX_NOTES; i++)
             {
                 try
                 {
@@ -87,7 +90,7 @@ namespace NoteTakingApp
 
         private void AddNote_Click(object sender, EventArgs e)
         {
-            if (noteNum < 20 && currText != null)
+            if (noteNum < MAX_NOTES && currText != null)
             {
                 NoteInit(currText);
 

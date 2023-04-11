@@ -59,6 +59,7 @@
             // 
             // Form1
             // 
+            this.AutoScroll = true;
             this.ClientSize = new System.Drawing.Size(900, 600);
             this.Controls.Add(this.NoteTitle);
             this.Controls.Add(this.AddNote);
@@ -72,5 +73,4 @@
         private TextBox NoteTitle;
         private Button AddNote;
     }
-
 }
