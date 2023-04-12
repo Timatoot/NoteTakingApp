@@ -124,22 +124,9 @@ namespace NoteTakingApp
 
         private void UpdateNote()
         {
-            string text;
-            string fileText;
 
-            for (int i = 0; i < noteNum; i++)
-            {
-                TextBox[] textBoxes = this.Controls.Find($"Note{i}", true) as TextBox[];
-                text = textBoxes[0].Text;
-
-                fileText = File.ReadAllText($"Note{i}.json");
-                if (fileText != text)
-                {
-                    string json = JsonConvert.SerializeObject(text);
-                    File.WriteAllText($"Note{i}.json", json);
-                }
-            }
         }
+
         private void Form1_FormClosing(object sender, FormClosingEventArgs e)
         {
             //UpdateNote();
