@@ -58,6 +58,10 @@ namespace NoteTakingApp
         {
             note = new TextBox();
             note.Text = text;
+            for (int i = 0; i < noteNum; i++)
+            {
+                note.Name = $"Note{i}";
+            }
             note.Location = (noteNum % 2 == 0) ? new Point(initialNoteCoords[0, 0], CalculateNotePosition(1, 0)) 
                 : new Point(initialNoteCoords[1, 0], CalculateNotePosition(1, 1));
             note.Size = new Size(width / 2 - 100, noteHeight);
@@ -116,12 +120,18 @@ namespace NoteTakingApp
 
         private void UpdateNote()
         {
+            string text;
+            string fileText;
+
             for (int i = 0; i < noteNum; i++)
             {
-                string fileText = File.ReadAllText($"Note{i}.json");
-                if (fileText != note.Text)
+                TextBox[] textBoxes = this.Controls.Find($"Note{i}", true) as TextBox[];
+                text = textBoxes[0].Text;
+
+                fileText = File.ReadAllText($"Note{i}.json");
+                if (fileText != text)
                 {
-                    string json = JsonConvert.SerializeObject(note.Text);
+                    string json = JsonConvert.SerializeObject(text);
                     File.WriteAllText($"Note{i}.json", json);
                 }
             }
