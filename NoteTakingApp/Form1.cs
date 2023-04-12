@@ -13,7 +13,10 @@ namespace NoteTakingApp
 
         TextBox note;
 
-        const int MAX_NOTES = 20;
+        static string json = File.ReadAllText("Note.json");
+        Dictionary<string, string> notesDic = JsonConvert.DeserializeObject<Dictionary<string, string>>(json) ?? new Dictionary<string, string>();
+
+        const int MAX_NOTES = 19;
 
         int[,] initialNoteCoords = 
         {
@@ -78,17 +81,15 @@ namespace NoteTakingApp
 
         private void CheckNoteFile()
         {
-            for (int i = 0; i <= MAX_NOTES; i++)
+            json = File.ReadAllText("Note.json");
+            notesDic = JsonConvert.DeserializeObject<Dictionary<string, string>>(json) ?? new Dictionary<string, string>();
+
+            foreach (string key in notesDic.Keys)
             {
-                try
+                if (notesDic.TryGetValue(key, out string noteText) && !string.IsNullOrEmpty(noteText))
                 {
-                    string fileText = File.ReadAllText($"Note{i}.json");
-                    NoteInit(fileText);
+                    NoteInit(noteText);
                     noteNum++;
-                }
-                catch
-                {
-                    break;
                 }
             }
         }
@@ -97,15 +98,18 @@ namespace NoteTakingApp
         {
             if (noteNum < MAX_NOTES && currText != null)
             {
+                notesDic.Add($"Note{noteNum}", currText);
+
+                json = JsonConvert.SerializeObject(notesDic);
+                File.WriteAllText("Note.json", json);
+
                 NoteInit(currText);
 
-                string json = JsonConvert.SerializeObject(currText);
-                File.WriteAllText($"Note{noteNum}.json", json);
-               
                 noteNum++;
                 NoteTitle.Text = null;
                 currText = null;
             }
+
         }
 
         /*void DeleteNote_Click(object sender, EventArgs e)
@@ -138,7 +142,7 @@ namespace NoteTakingApp
         }
         private void Form1_FormClosing(object sender, FormClosingEventArgs e)
         {
-            UpdateNote();
+            //UpdateNote();
         }
     }
 }
