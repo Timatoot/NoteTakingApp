@@ -68,31 +68,23 @@ namespace NoteTakingApp
             note.Anchor = (noteNum % 2 == 0) ? leftNoteAnchor : rightNoteAnchor;
             note.Multiline = true;
             note.ScrollBars = ScrollBars.Vertical;
-            foreach (TextBox noteTextBox in this.Controls.OfType<TextBox>())
-            {
-                noteTextBox.TextChanged += Note_TextChanged;
-            }
+            note.TextChanged += Note_TextChanged;
             this.Controls.Add(note);
         }
 
         private void Note_TextChanged(object sender, EventArgs e)
         {
-            currText = note.Text;
+            TextBox noteTextBox = sender as TextBox;
+            string noteName = noteTextBox.Name;
+            string noteText = noteTextBox.Text;
+            currText = noteText;
+
+
             json = File.ReadAllText("Note.json");
             notesDic = JsonConvert.DeserializeObject<Dictionary<string, string>>(json) ?? new Dictionary<string, string>();
 
-            /* if (notesDic.TryGetValue(note.Name, out string noteText))
-             {
-                 Debug.WriteLine("First: " + noteText);
-             }
-             notesDic[note.Name] = currText;
-             if (notesDic.TryGetValue(note.Name, out string noteTet))
-             {
-                 Debug.WriteLine("Second: " + noteTet);
-             }*/
+            notesDic[noteName] = currText;
 
-            Debug.WriteLine(note.Name);
-            
             json = JsonConvert.SerializeObject(notesDic);
             File.WriteAllText("Note.json", json);
         }
@@ -131,16 +123,6 @@ namespace NoteTakingApp
                 NoteTitle.Text = null;
                 currText = null;
             }
-        }
-
-        private void UpdateNote()
-        {
-
-        }
-
-        private void Form1_FormClosing(object sender, FormClosingEventArgs e)
-        {
-            //UpdateNote();
         }
     }
 }
