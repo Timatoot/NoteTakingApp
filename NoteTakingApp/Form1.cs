@@ -61,19 +61,41 @@ namespace NoteTakingApp
         {
             note = new TextBox();
             note.Text = text;
-            for (int i = 0; i < noteNum; i++)
-            {
-                note.Name = $"Note{i}";
-            }
+            note.Name = $"Note{noteNum}";
             note.Location = (noteNum % 2 == 0) ? new Point(initialNoteCoords[0, 0], CalculateNotePosition(1, 0)) 
                 : new Point(initialNoteCoords[1, 0], CalculateNotePosition(1, 1));
             note.Size = new Size(width / 2 - 100, noteHeight);
             note.Anchor = (noteNum % 2 == 0) ? leftNoteAnchor : rightNoteAnchor;
             note.Multiline = true;
             note.ScrollBars = ScrollBars.Vertical;
+            foreach (TextBox noteTextBox in this.Controls.OfType<TextBox>())
+            {
+                noteTextBox.TextChanged += Note_TextChanged;
+            }
             this.Controls.Add(note);
         }
 
+        private void Note_TextChanged(object sender, EventArgs e)
+        {
+            currText = note.Text;
+            json = File.ReadAllText("Note.json");
+            notesDic = JsonConvert.DeserializeObject<Dictionary<string, string>>(json) ?? new Dictionary<string, string>();
+
+            /* if (notesDic.TryGetValue(note.Name, out string noteText))
+             {
+                 Debug.WriteLine("First: " + noteText);
+             }
+             notesDic[note.Name] = currText;
+             if (notesDic.TryGetValue(note.Name, out string noteTet))
+             {
+                 Debug.WriteLine("Second: " + noteTet);
+             }*/
+
+            Debug.WriteLine(note.Name);
+            
+            json = JsonConvert.SerializeObject(notesDic);
+            File.WriteAllText("Note.json", json);
+        }
         private void NoteTitle_TextChanged(object sender, EventArgs e)
         {
             currText = NoteTitle.Text;
@@ -109,18 +131,7 @@ namespace NoteTakingApp
                 NoteTitle.Text = null;
                 currText = null;
             }
-
         }
-
-        /*void DeleteNote_Click(object sender, EventArgs e)
-        {
-            if (noteNum > 0)
-            {
-                this.Controls.Remove(note);
-                File.Delete($"Note{noteNum - 1}.json");
-                noteNum--;
-            }
-        }*/
 
         private void UpdateNote()
         {
