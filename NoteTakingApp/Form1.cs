@@ -18,10 +18,10 @@ namespace NoteTakingApp
         Dictionary<string, string> notesDic = JsonConvert.DeserializeObject<Dictionary<string, string>>(json) ?? new Dictionary<string, string>();
 
         const int MAX_NOTES = 19;
-
+        
         int[,] initialNoteCoords = 
         {
-            { 50, 200 }, { 450, 200 }
+            { 50, 200 }, { 470, 200 }
         };
 
         int noteHeight = 350;
@@ -48,8 +48,15 @@ namespace NoteTakingApp
             return calcPos;
         }
 
+        private int CalculateNoteWidth()
+        {
+            int calcWidth = (width - 100) / 2;
+            return calcWidth;
+        }
+
         private void NoteInit(string text)
         {
+
             note = new TextBox();
             note.Text = text;
             note.Name = $"Note{noteNum}";
@@ -64,7 +71,7 @@ namespace NoteTakingApp
                 rightNoteNum++;
             }
 
-            note.Size = new Size(width / 2 - 100, noteHeight);
+            note.Size = new Size(CalculateNoteWidth(), noteHeight);
             note.Anchor = (noteNum % 2 == 0) ? leftNoteAnchor : rightNoteAnchor;
             note.Multiline = true;
             note.ScrollBars = ScrollBars.Vertical;
@@ -74,12 +81,14 @@ namespace NoteTakingApp
 
         private void DeleteButtonInit()
         {
+            int buttonWidth = 40;
+            int buttonHeight = 30;
             deleteButton = new Button();
             deleteButton.Text = "Del";
             deleteButton.Name = $"DeleteButton{noteNum}";
-            deleteButton.Location = (noteNum % 2 == 0) ? new Point(initialNoteCoords[0, 0], CalculateNotePosition(1, 0)) 
-                : new Point(initialNoteCoords[1, 0], CalculateNotePosition(1, 1));
-            deleteButton.Size = new Size(100, 30);
+            deleteButton.Location = (noteNum % 2 == 0) ? new Point(initialNoteCoords[0, 0] + CalculateNoteWidth() - buttonWidth, CalculateNotePosition(1, 0)) 
+                : new Point(initialNoteCoords[1, 0] + CalculateNoteWidth() - buttonWidth, CalculateNotePosition(1, 1));
+            deleteButton.Size = new Size(buttonWidth, buttonHeight);
             deleteButton.Anchor = (noteNum % 2 == 0) ? leftNoteAnchor : rightNoteAnchor;
             deleteButton.BringToFront();
             // deleteButton.Click += DeleteButton_Click;
@@ -139,7 +148,7 @@ namespace NoteTakingApp
             }
         }
 
-        private void Delete_Note()
+        private void DeleteButton_Click()
         {
 
         }
