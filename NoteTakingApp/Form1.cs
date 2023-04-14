@@ -12,6 +12,7 @@ namespace NoteTakingApp
         AnchorStyles rightNoteAnchor = AnchorStyles.Top | AnchorStyles.Right;
 
         TextBox note;
+        Button deleteButton;
 
         static string json = File.ReadAllText("Note.json");
         Dictionary<string, string> notesDic = JsonConvert.DeserializeObject<Dictionary<string, string>>(json) ?? new Dictionary<string, string>();
@@ -42,19 +43,9 @@ namespace NoteTakingApp
 
         private int CalculateNotePosition(int dir, int side)
         {
-            int calcPos;
-            if (side == 0)
-            {
-                calcPos = initialNoteCoords[side, dir] + ((noteHeight + 50) * leftNoteNum);
-                leftNoteNum++;
-                return calcPos;
-            }
-            else
-            {
-                calcPos = initialNoteCoords[side, dir] + ((noteHeight + 50) * rightNoteNum);
-                rightNoteNum++;
-                return calcPos;
-            }
+            int calcPos = (side == 0) ? initialNoteCoords[side, dir] + ((noteHeight + 50) * leftNoteNum) 
+                : initialNoteCoords[side, dir] + ((noteHeight + 50) * rightNoteNum);
+            return calcPos;
         }
 
         private void NoteInit(string text)
@@ -64,6 +55,15 @@ namespace NoteTakingApp
             note.Name = $"Note{noteNum}";
             note.Location = (noteNum % 2 == 0) ? new Point(initialNoteCoords[0, 0], CalculateNotePosition(1, 0)) 
                 : new Point(initialNoteCoords[1, 0], CalculateNotePosition(1, 1));
+            if (noteNum % 2 == 0)
+            {
+                leftNoteNum++;
+            }
+            else
+            { 
+                rightNoteNum++;
+            }
+
             note.Size = new Size(width / 2 - 100, noteHeight);
             note.Anchor = (noteNum % 2 == 0) ? leftNoteAnchor : rightNoteAnchor;
             note.Multiline = true;
@@ -72,13 +72,26 @@ namespace NoteTakingApp
             this.Controls.Add(note);
         }
 
+        private void DeleteButtonInit()
+        {
+            deleteButton = new Button();
+            deleteButton.Text = "Del";
+            deleteButton.Name = $"DeleteButton{noteNum}";
+            deleteButton.Location = (noteNum % 2 == 0) ? new Point(initialNoteCoords[0, 0], CalculateNotePosition(1, 0)) 
+                : new Point(initialNoteCoords[1, 0], CalculateNotePosition(1, 1));
+            deleteButton.Size = new Size(100, 30);
+            deleteButton.Anchor = (noteNum % 2 == 0) ? leftNoteAnchor : rightNoteAnchor;
+            deleteButton.BringToFront();
+            // deleteButton.Click += DeleteButton_Click;
+            this.Controls.Add(deleteButton);
+        }
+
         private void Note_TextChanged(object sender, EventArgs e)
         {
             TextBox noteTextBox = sender as TextBox;
             string noteName = noteTextBox.Name;
             string noteText = noteTextBox.Text;
             currText = noteText;
-
 
             json = File.ReadAllText("Note.json");
             notesDic = JsonConvert.DeserializeObject<Dictionary<string, string>>(json) ?? new Dictionary<string, string>();
@@ -102,6 +115,7 @@ namespace NoteTakingApp
             {
                 if (notesDic.TryGetValue(key, out string noteText) && !string.IsNullOrEmpty(noteText))
                 {
+                    DeleteButtonInit();
                     NoteInit(noteText);
                     noteNum++;
                 }
@@ -123,6 +137,11 @@ namespace NoteTakingApp
                 NoteTitle.Text = null;
                 currText = null;
             }
+        }
+
+        private void Delete_Note()
+        {
+
         }
     }
 }
