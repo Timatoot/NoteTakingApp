@@ -81,10 +81,10 @@ namespace NoteTakingApp
 
         private void DeleteButtonInit()
         {
-            int buttonWidth = 40;
-            int buttonHeight = 30;
+            int buttonWidth = 23;
+            int buttonHeight = 350;
             deleteButton = new Button();
-            deleteButton.Text = "Del";
+            deleteButton.Text = "Delete";
             deleteButton.Name = $"DeleteButton{noteNum}";
             deleteButton.Location = (noteNum % 2 == 0) ? new Point(initialNoteCoords[0, 0] + CalculateNoteWidth() - buttonWidth, CalculateNotePosition(1, 0)) 
                 : new Point(initialNoteCoords[1, 0] + CalculateNoteWidth() - buttonWidth, CalculateNotePosition(1, 1));
