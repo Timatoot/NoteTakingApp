@@ -109,7 +109,7 @@ namespace NoteTakingApp
             deleteButton.Size = new Size(buttonWidth, buttonHeight);
             deleteButton.Anchor = (noteNum % 2 == 0) ? leftNoteAnchor : rightNoteAnchor;
             deleteButton.BringToFront();
-            //deleteButton.Click += DeleteButton_Click;
+            deleteButton.Click += new System.EventHandler(DeleteButton_Click);
             this.Controls.Add(deleteButton);
         }
 
@@ -169,6 +169,7 @@ namespace NoteTakingApp
                 json = JsonConvert.SerializeObject(notesDic);
                 File.WriteAllText("Note.json", json);
 
+                DeleteButtonInit();
                 NoteInit(currText);
 
                 noteNum++;
@@ -177,7 +178,7 @@ namespace NoteTakingApp
             }
         }
 
-        private void DeleteButton_Click()
+        private void DeleteButton_Click(object sender, EventArgs e)
         {
 
         }
