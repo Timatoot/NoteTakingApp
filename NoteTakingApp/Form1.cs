@@ -14,8 +14,9 @@ namespace NoteTakingApp
         TextBox note;
         Button deleteButton;
 
-        static string json;
-        Dictionary<string, string> notesDic;
+        static string json = File.ReadAllText("Note.json");
+        Dictionary<string, string> notesDic = JsonConvert.DeserializeObject<Dictionary<string, string>>(json) 
+            ?? new Dictionary<string, string>();
 
         const int MAX_NOTES = 19;
         int noteNum = 0;
@@ -47,7 +48,8 @@ namespace NoteTakingApp
         /// <returns> The calculated position of the note</returns>
         private int CalculateNotePosition(int dir, int side)
         {
-            int calcPos = (side == 0) ? initialNoteCoords[side, dir] + ((noteHeight + 50) * leftNoteNum) 
+            int calcPos = (side == 0) ? 
+                initialNoteCoords[side, dir] + ((noteHeight + 50) * leftNoteNum) 
                 : initialNoteCoords[side, dir] + ((noteHeight + 50) * rightNoteNum);
             return calcPos;
         }
@@ -71,7 +73,8 @@ namespace NoteTakingApp
             note = new TextBox();
             note.Text = text;
             note.Name = $"Note{noteNum}";
-            note.Location = (noteNum % 2 == 0) ? new Point(initialNoteCoords[0, 0], CalculateNotePosition(1, 0)) 
+            note.Location = (noteNum % 2 == 0) ? 
+                new Point(initialNoteCoords[0, 0], CalculateNotePosition(1, 0)) 
                 : new Point(initialNoteCoords[1, 0], CalculateNotePosition(1, 1));
             if (noteNum % 2 == 0)
             {
@@ -100,7 +103,8 @@ namespace NoteTakingApp
             deleteButton = new Button();
             deleteButton.Text = "Delete";
             deleteButton.Name = $"DeleteButton{noteNum}";
-            deleteButton.Location = (noteNum % 2 == 0) ? new Point(initialNoteCoords[0, 0] + CalculateNoteWidth() - buttonWidth, CalculateNotePosition(1, 0)) 
+            deleteButton.Location = (noteNum % 2 == 0) ? 
+                new Point(initialNoteCoords[0, 0] + CalculateNoteWidth() - buttonWidth, CalculateNotePosition(1, 0)) 
                 : new Point(initialNoteCoords[1, 0] + CalculateNoteWidth() - buttonWidth, CalculateNotePosition(1, 1));
             deleteButton.Size = new Size(buttonWidth, buttonHeight);
             deleteButton.Anchor = (noteNum % 2 == 0) ? leftNoteAnchor : rightNoteAnchor;
@@ -121,11 +125,7 @@ namespace NoteTakingApp
             string noteText = noteTextBox.Text;
             currText = noteText;
 
-            json = File.ReadAllText("Note.json");
-            notesDic = JsonConvert.DeserializeObject<Dictionary<string, string>>(json) ?? new Dictionary<string, string>();
-
             notesDic[noteName] = currText;
-
             json = JsonConvert.SerializeObject(notesDic);
             File.WriteAllText("Note.json", json);
         }
@@ -145,9 +145,6 @@ namespace NoteTakingApp
         /// </summary>
         private void CheckNoteFile()
         {
-            json = File.ReadAllText("Note.json");
-            notesDic = JsonConvert.DeserializeObject<Dictionary<string, string>>(json) ?? new Dictionary<string, string>();
-
             foreach (string key in notesDic.Keys)
             {
                 if (notesDic.TryGetValue(key, out string noteText) && !string.IsNullOrEmpty(noteText))
@@ -168,10 +165,7 @@ namespace NoteTakingApp
         {
             if (noteNum < MAX_NOTES && currText != null)
             {
-                notesDic = JsonConvert.DeserializeObject<Dictionary<string, string>>(json) ?? new Dictionary<string, string>();
-
                 notesDic.Add($"Note{noteNum}", currText);
-
                 json = JsonConvert.SerializeObject(notesDic);
                 File.WriteAllText("Note.json", json);
 
