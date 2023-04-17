@@ -39,6 +39,12 @@ namespace NoteTakingApp
             CheckNoteFile();
         }
 
+        /// <summary>
+        /// Takes in the direction and side of the note and calculates the position of the note
+        /// </summary>
+        /// <param name="dir"> Either a 0 or 1. 0 is x value, 1 is y value</param>
+        /// <param name="side"> Either a 0 or 1. 0 is left note, 1 is right note</param>
+        /// <returns> The calculated position of the note</returns>
         private int CalculateNotePosition(int dir, int side)
         {
             int calcPos = (side == 0) ? initialNoteCoords[side, dir] + ((noteHeight + 50) * leftNoteNum) 
@@ -46,12 +52,20 @@ namespace NoteTakingApp
             return calcPos;
         }
 
+        /// <summary>
+        /// Calculates the width of the note
+        /// </summary>
+        /// <returns> Calculated width</returns>
         private int CalculateNoteWidth()
         {
             int calcWidth = (width - 100) / 2;
             return calcWidth;
         }
 
+        /// <summary>
+        /// Initializes the note with the given parameters
+        /// </summary>
+        /// <param name="text"> Takes in the text that will be displayed</param>
         private void NoteInit(string text)
         {
             note = new TextBox();
@@ -76,6 +90,9 @@ namespace NoteTakingApp
             this.Controls.Add(note);
         }
 
+        /// <summary>
+        /// Initiallizes the delete button
+        /// </summary>
         private void DeleteButtonInit()
         {
             int buttonWidth = 23;
@@ -88,10 +105,15 @@ namespace NoteTakingApp
             deleteButton.Size = new Size(buttonWidth, buttonHeight);
             deleteButton.Anchor = (noteNum % 2 == 0) ? leftNoteAnchor : rightNoteAnchor;
             deleteButton.BringToFront();
-            // deleteButton.Click += DeleteButton_Click;
+            //deleteButton.Click += DeleteButton_Click;
             this.Controls.Add(deleteButton);
         }
 
+        /// <summary>
+        /// Used for note updates. When note text is changed, the text is re-saved to the json file
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void Note_TextChanged(object sender, EventArgs e)
         {
             TextBox noteTextBox = sender as TextBox;
@@ -107,11 +129,20 @@ namespace NoteTakingApp
             json = JsonConvert.SerializeObject(notesDic);
             File.WriteAllText("Note.json", json);
         }
+
+        /// <summary>
+        /// Gets the typed text from the note taking textbox
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void NoteTitle_TextChanged(object sender, EventArgs e)
         {
             currText = NoteTitle.Text;
         }
-
+        
+        /// <summary>
+        /// Opens and reads the json file when the program opens. If there is a note saved, it will be displayed.
+        /// </summary>
         private void CheckNoteFile()
         {
             json = File.ReadAllText("Note.json");
@@ -128,6 +159,11 @@ namespace NoteTakingApp
             }
         }
 
+        /// <summary>
+        /// Adds a note to the json file and displays it on the form
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void AddNote_Click(object sender, EventArgs e)
         {
             if (noteNum < MAX_NOTES && currText != null)
