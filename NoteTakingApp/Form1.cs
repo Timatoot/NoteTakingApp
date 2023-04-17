@@ -14,25 +14,23 @@ namespace NoteTakingApp
         TextBox note;
         Button deleteButton;
 
-        static string json = File.ReadAllText("Note.json");
-        Dictionary<string, string> notesDic = JsonConvert.DeserializeObject<Dictionary<string, string>>(json) ?? new Dictionary<string, string>();
+        static string json;
+        Dictionary<string, string> notesDic;
 
         const int MAX_NOTES = 19;
-        
+        int noteNum = 0;
+        int rightNoteNum = 0;
+        int leftNoteNum = 0;
+
         int[,] initialNoteCoords = 
         {
             { 50, 200 }, { 470, 200 }
         };
 
         int noteHeight = 350;
-        
-        int noteNum = 0;
-        string? currText;
-
-        int rightNoteNum = 0;
-        int leftNoteNum = 0;
-
         int width;
+
+        string? currText;
 
         public Form1()
         {
@@ -56,7 +54,6 @@ namespace NoteTakingApp
 
         private void NoteInit(string text)
         {
-
             note = new TextBox();
             note.Text = text;
             note.Name = $"Note{noteNum}";
@@ -135,6 +132,8 @@ namespace NoteTakingApp
         {
             if (noteNum < MAX_NOTES && currText != null)
             {
+                notesDic = JsonConvert.DeserializeObject<Dictionary<string, string>>(json) ?? new Dictionary<string, string>();
+
                 notesDic.Add($"Note{noteNum}", currText);
 
                 json = JsonConvert.SerializeObject(notesDic);
