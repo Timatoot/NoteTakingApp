@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq.Expressions;
 using System.Windows.Forms;
@@ -180,7 +181,35 @@ namespace NoteTakingApp
 
         private void DeleteButton_Click(object sender, EventArgs e)
         {
+            Button deleteButton = sender as Button;
+            char noteNumber = deleteButton.Name[deleteButton.Name.Length-1];
+            string noteName = $"Note{noteNumber}";
+            string value;
 
+            notesDic.Remove(noteName);
+            this.Controls.RemoveByKey(noteName);
+            this.Controls.RemoveByKey(deleteButton.Name);
+            noteNum--;
+            for (int i = 0; i < notesDic.Count(); i++)
+            {
+                
+                try
+                {
+                    value = notesDic[$"Note{i}"];
+                    notesDic.Remove($"Note{i}");
+                }
+                catch (Exception)
+                {
+                    value = notesDic[$"Note{i + 1}"];
+                    notesDic.Remove($"Note{i + 1}");
+                }
+                
+                notesDic.Add($"Note{i}", value);
+                
+            }
+            json = JsonConvert.SerializeObject(notesDic);
+            File.WriteAllText("Note.json", json);
+            CheckNoteFile();
         }
     }
 }
