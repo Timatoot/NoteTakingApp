@@ -179,36 +179,49 @@ namespace NoteTakingApp
             }
         }
 
+        /// <summary>
+        /// Deletes a note from the json file and removes it from the form
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void DeleteButton_Click(object sender, EventArgs e)
         {
             Button deleteButton = sender as Button;
             char noteNumber = deleteButton.Name[deleteButton.Name.Length-1];
             string noteName = $"Note{noteNumber}";
-            string value;
 
             notesDic.Remove(noteName);
             this.Controls.RemoveByKey(noteName);
             this.Controls.RemoveByKey(deleteButton.Name);
             noteNum--;
-            for (int i = 0; i < notesDic.Count(); i++)
+            for (int i = 0; i < notesDic.Count; i++)
             {
-                
-                try
+                string oldName = $"Note{i + 1}";
+                if (notesDic.ContainsKey(oldName))
                 {
-                    value = notesDic[$"Note{i}"];
-                    notesDic.Remove($"Note{i}");
+                    string newName = $"Note{i}";
+                    string value = notesDic[oldName];
+                    notesDic.Remove(oldName);
+                    if (!notesDic.ContainsKey(newName))
+                    {
+                        notesDic.Add(newName, value);
+                    }
+                    else
+                    {
+                        notesDic.Add(oldName, value);
+                    }
                 }
-                catch (Exception)
-                {
-                    value = notesDic[$"Note{i + 1}"];
-                    notesDic.Remove($"Note{i + 1}");
-                }
-                
-                notesDic.Add($"Note{i}", value);
-                
             }
             json = JsonConvert.SerializeObject(notesDic);
             File.WriteAllText("Note.json", json);
+            leftNoteNum = 0;
+            rightNoteNum = 0;
+            for (int i = 0; i <= noteNum; i++)
+            {
+                this.Controls.RemoveByKey($"Note{i}");
+                this.Controls.RemoveByKey($"DeleteButton{i}");
+            }
+            noteNum = 0;
             CheckNoteFile();
         }
     }
