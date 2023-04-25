@@ -50,6 +50,11 @@
             // AddNote
             // 
             this.AddNote.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.AddNote.AutoEllipsis = true;
+            this.AddNote.BackColor = System.Drawing.Color.White;
+            this.AddNote.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.AddNote.FlatAppearance.BorderSize = 0;
+            this.AddNote.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.AddNote.Location = new System.Drawing.Point(810, 150);
             this.AddNote.Name = "AddNote";
             this.AddNote.Size = new System.Drawing.Size(50, 27);
@@ -60,12 +65,15 @@
             // Form1
             // 
             this.AutoScroll = true;
+            this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(130)))), ((int)(((byte)(147)))), ((int)(((byte)(172)))));
             this.ClientSize = new System.Drawing.Size(900, 600);
             this.Controls.Add(this.NoteTitle);
             this.Controls.Add(this.AddNote);
             this.Name = "Form1";
+            this.Load += new System.EventHandler(this.Form1_Load);
             this.ResumeLayout(false);
             this.PerformLayout();
+
         }
 
         #endregion

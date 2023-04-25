@@ -2,13 +2,27 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq.Expressions;
+using System.Runtime.InteropServices;
 using System.Windows.Forms;
 using Newtonsoft.Json;
+using System.Runtime.InteropServices;
 
 namespace NoteTakingApp
 {
     public partial class Form1 : Form
     {
+        [DllImport("Gdi32.dll", EntryPoint = "CreateRoundRectRgn")]
+        private static extern IntPtr CreateRoundRectRgn
+        (
+            int nLeftRect, // x-coordinate of upper-left corner
+            int nTopRect, // y-coordinate of upper-left corner
+            int nRightRect, // x-coordinate of lower-right corner
+            int nBottomRect, // y-coordinate of lower-right corner
+            int nWidthEllipse, // height of ellipse
+            int nHeightEllipse // width of ellipse
+        );
+
+
         AnchorStyles leftNoteAnchor = AnchorStyles.Top | AnchorStyles.Left;
         AnchorStyles rightNoteAnchor = AnchorStyles.Top | AnchorStyles.Right;
 
@@ -39,6 +53,11 @@ namespace NoteTakingApp
             InitializeComponent();
             width = ClientSize.Width;
             CheckNoteFile();
+        }
+
+        private void Form1_Load(object sender, EventArgs e)
+        {
+            AddNote.Region = Region.FromHrgn(CreateRoundRectRgn(0, 0, AddNote.Width, AddNote.Height, 20, 20));
         }
 
         /// <summary>
