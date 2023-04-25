@@ -91,7 +91,7 @@ namespace NoteTakingApp
             note.Multiline = true;
             note.ScrollBars = ScrollBars.Vertical;
             note.TextChanged += Note_TextChanged;
-            this.Controls.Add(note);
+            Controls.Add(note);
         }
 
         /// <summary>
@@ -111,7 +111,7 @@ namespace NoteTakingApp
             deleteButton.Anchor = (noteNum % 2 == 0) ? leftNoteAnchor : rightNoteAnchor;
             deleteButton.BringToFront();
             deleteButton.Click += new System.EventHandler(DeleteButton_Click);
-            this.Controls.Add(deleteButton);
+            Controls.Add(deleteButton);
         }
 
         /// <summary>
@@ -191,8 +191,8 @@ namespace NoteTakingApp
             string noteName = $"Note{noteNumber}";
 
             notesDic.Remove(noteName);
-            this.Controls.RemoveByKey(noteName);
-            this.Controls.RemoveByKey(deleteButton.Name);
+            Controls.RemoveByKey(noteName);
+            Controls.RemoveByKey(deleteButton.Name);
             noteNum--;
             for (int i = 0; i < notesDic.Count; i++)
             {
@@ -218,8 +218,8 @@ namespace NoteTakingApp
             rightNoteNum = 0;
             for (int i = 0; i <= noteNum; i++)
             {
-                this.Controls.RemoveByKey($"Note{i}");
-                this.Controls.RemoveByKey($"DeleteButton{i}");
+                Controls.RemoveByKey($"Note{i}");
+                Controls.RemoveByKey($"DeleteButton{i}");
             }
             noteNum = 0;
             CheckNoteFile();
