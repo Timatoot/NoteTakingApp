@@ -58,6 +58,7 @@ namespace NoteTakingApp
         private void Form1_Load(object sender, EventArgs e)
         {
             AddNote.Region = Region.FromHrgn(CreateRoundRectRgn(0, 0, AddNote.Width, AddNote.Height, 20, 20));
+            NoteTitle.Region = Region.FromHrgn(CreateRoundRectRgn(1, 0, NoteTitle.Width, NoteTitle.Height, 20, 20));
         }
 
         /// <summary>

@@ -60,6 +60,7 @@
             this.AddNote.Size = new System.Drawing.Size(50, 27);
             this.AddNote.TabIndex = 0;
             this.AddNote.Text = "Add";
+            this.AddNote.UseVisualStyleBackColor = false;
             this.AddNote.Click += new System.EventHandler(this.AddNote_Click);
             // 
             // Form1
