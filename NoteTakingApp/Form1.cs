@@ -18,10 +18,9 @@ namespace NoteTakingApp
             int nTopRect, // y-coordinate of upper-left corner
             int nRightRect, // x-coordinate of lower-right corner
             int nBottomRect, // y-coordinate of lower-right corner
-            int nWidthEllipse, // height of ellipse
-            int nHeightEllipse // width of ellipse
+            int nWidthEllipse, // width of ellipse
+            int nHeightEllipse // height of ellipse
         );
-
 
         AnchorStyles leftNoteAnchor = AnchorStyles.Top | AnchorStyles.Left;
         AnchorStyles rightNoteAnchor = AnchorStyles.Top | AnchorStyles.Right;
@@ -55,6 +54,11 @@ namespace NoteTakingApp
             CheckNoteFile();
         }
 
+        /// <summary>
+        /// Runs when the form is loaded
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void Form1_Load(object sender, EventArgs e)
         {
             AddNote.Region = Region.FromHrgn(CreateRoundRectRgn(0, 0, AddNote.Width, AddNote.Height, 20, 20));
@@ -105,11 +109,11 @@ namespace NoteTakingApp
             { 
                 rightNoteNum++;
             }
-
             note.Size = new Size(CalculateNoteWidth(), noteHeight);
             note.Anchor = (noteNum % 2 == 0) ? leftNoteAnchor : rightNoteAnchor;
             note.Multiline = true;
             note.ScrollBars = ScrollBars.Vertical;
+            note.Region = Region.FromHrgn(CreateRoundRectRgn(0, 0, note.Width, note.Height, 20, 20));
             note.TextChanged += Note_TextChanged;
             Controls.Add(note);
         }
@@ -124,11 +128,15 @@ namespace NoteTakingApp
             deleteButton = new Button();
             deleteButton.Text = "Delete";
             deleteButton.Name = $"DeleteButton{noteNum}";
-            deleteButton.Location = (noteNum % 2 == 0) ? 
+            deleteButton.FlatAppearance.BorderSize = 0;
+            deleteButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            deleteButton.BackColor = System.Drawing.Color.Gray;
+            deleteButton.Location = (noteNum % 2 == 0) ?
                 new Point(initialNoteCoords[0, 0] + CalculateNoteWidth() - buttonWidth, CalculateNotePosition(1, 0)) 
                 : new Point(initialNoteCoords[1, 0] + CalculateNoteWidth() - buttonWidth, CalculateNotePosition(1, 1));
             deleteButton.Size = new Size(buttonWidth, buttonHeight);
             deleteButton.Anchor = (noteNum % 2 == 0) ? leftNoteAnchor : rightNoteAnchor;
+            deleteButton.Region = Region.FromHrgn(CreateRoundRectRgn(0, 0, deleteButton.Width, deleteButton.Height, 20, 20));
             deleteButton.BringToFront();
             deleteButton.Click += new System.EventHandler(DeleteButton_Click);
             Controls.Add(deleteButton);
