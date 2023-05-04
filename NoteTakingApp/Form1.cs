@@ -6,11 +6,21 @@ using System.Runtime.InteropServices;
 using System.Windows.Forms;
 using Newtonsoft.Json;
 using System.Runtime.InteropServices;
+using MongoDB.Bson;
+using System.Net.Sockets;
+using System.Text;
+using MongoDB.Driver;
+using MongoDB.Driver.GridFS;
 
 namespace NoteTakingApp
 {
     public partial class Form1 : Form
-    {
+    { 
+       /* MongoClient client = new MongoClient("mongodb://localhost:27017");
+        database = client.GetDatabase("mydatabase");
+        // Create a GridFS bucket for storing and retrieving files
+        GridFSBucket bucket = new GridFSBucket(database);*/
+
         [DllImport("Gdi32.dll", EntryPoint = "CreateRoundRectRgn")]
         private static extern IntPtr CreateRoundRectRgn
         (
@@ -53,6 +63,34 @@ namespace NoteTakingApp
             width = ClientSize.Width;
             CheckNoteFile();
         }
+
+        /*public void ReadDB()
+        {
+            // Read a file from GridFS
+            var fileIdToRead = new ObjectId("my-file-id");
+            var fileToRead = bucket.Find(fileIdToRead);
+            using (var stream = new MemoryStream())
+            {
+                fileToRead.Download(stream);
+                var fileContent = Encoding.UTF8.GetString(stream.ToArray());
+                // Do something with the file content
+            }
+        }
+
+        public void WriteDB()
+        {
+            var filePath = "path/to/my/file.txt";
+            using (var stream = new FileStream(filePath, FileMode.Open))
+            {
+                var options = new GridFSUploadOptions
+                {
+                    Metadata = new BsonDocument("contentType", "text/plain")
+                };
+                var fileId = bucket.UploadFromStream(Path.GetFileName(filePath), stream, options);
+            }
+
+        }*/
+
 
         /// <summary>
         /// Runs when the form is loaded
