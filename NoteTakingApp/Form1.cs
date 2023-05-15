@@ -11,17 +11,15 @@ using System.Net.Sockets;
 using System.Text;
 using MongoDB.Driver;
 using MongoDB.Driver.GridFS;
+using Newtonsoft.Json.Linq;
+using System.Timers;
 
 namespace NoteTakingApp
 {
     public partial class Form1 : Form
     { 
-       /* MongoClient client = new MongoClient("mongodb://localhost:27017");
-        database = client.GetDatabase("mydatabase");
-        // Create a GridFS bucket for storing and retrieving files
-        GridFSBucket bucket = new GridFSBucket(database);*/
-
         [DllImport("Gdi32.dll", EntryPoint = "CreateRoundRectRgn")]
+
         private static extern IntPtr CreateRoundRectRgn
         (
             int nLeftRect, // x-coordinate of upper-left corner
@@ -32,13 +30,19 @@ namespace NoteTakingApp
             int nHeightEllipse // height of ellipse
         );
 
+        string dbUser = Program.DbUser;
+        string dbPass = Program.DbPass;
+
+        static string StaticDBUser = Program.DbUser;
+        static string StaticDBPass = Program.DbPass;
+
         AnchorStyles leftNoteAnchor = AnchorStyles.Top | AnchorStyles.Left;
         AnchorStyles rightNoteAnchor = AnchorStyles.Top | AnchorStyles.Right;
 
         TextBox note;
         Button deleteButton;
+        static string json = ReadDB();
 
-        static string json = File.ReadAllText("Note.json");
         Dictionary<string, string> notesDic = JsonConvert.DeserializeObject<Dictionary<string, string>>(json) 
             ?? new Dictionary<string, string>();
 
@@ -64,32 +68,48 @@ namespace NoteTakingApp
             CheckNoteFile();
         }
 
-        /*public void ReadDB()
+        public void WriteDB()
         {
-            // Read a file from GridFS
-            var fileIdToRead = new ObjectId("my-file-id");
-            var fileToRead = bucket.Find(fileIdToRead);
-            using (var stream = new MemoryStream())
+            var client = new MongoClient($"mongodb+srv://{dbUser}:{dbPass}@noteapptim.9l2spze.mongodb.net/?authSource=admin");
+            var database = client.GetDatabase("NoteApp");
+            var collection = database.GetCollection<BsonDocument>("Notes");
+            var objectId = new ObjectId("645d1530a6311621926eb9b5");
+
+            var filter = Builders<BsonDocument>.Filter.Eq("_id", objectId);
+
+            string jsonFilePath = "C:\\Users\\Tim\\source\\repos\\NoteTakingApp\\NoteTakingApp\\bin\\Debug\\net6.0-windows\\Note.json";
+            JObject json = JObject.Parse(File.ReadAllText(jsonFilePath));
+
+            BsonDocument bson = BsonDocument.Parse(json.ToString());
+
+            var document = collection.Find(filter).FirstOrDefault();
+            if (document != null)
             {
-                fileToRead.Download(stream);
-                var fileContent = Encoding.UTF8.GetString(stream.ToArray());
-                // Do something with the file content
+                collection.ReplaceOne(filter, bson);
+            }
+            else
+            {
+                bson["_id"] = ObjectId.GenerateNewId();
             }
         }
 
-        public void WriteDB()
-        {
-            var filePath = "path/to/my/file.txt";
-            using (var stream = new FileStream(filePath, FileMode.Open))
-            {
-                var options = new GridFSUploadOptions
-                {
-                    Metadata = new BsonDocument("contentType", "text/plain")
-                };
-                var fileId = bucket.UploadFromStream(Path.GetFileName(filePath), stream, options);
-            }
 
-        }*/
+        public static string ReadDB()
+        {
+            var client = new MongoClient($"mongodb+srv://{StaticDBUser}:{StaticDBPass}@noteapptim.9l2spze.mongodb.net/?authSource=admin");
+            var database = client.GetDatabase("NoteApp");
+            var collection = database.GetCollection<BsonDocument>("Notes");
+            var objectId = new ObjectId("645d1530a6311621926eb9b5");
+            var filter = Builders<BsonDocument>.Filter.Eq("_id", objectId);
+
+            // Define a projection that excludes the '_id' field.
+            var projection = Builders<BsonDocument>.Projection.Exclude("_id");
+
+            var document = collection.Find(filter).Project(projection).FirstOrDefault();
+            var jsons = document.ToJson();
+
+            return jsons;
+        }
 
 
         /// <summary>

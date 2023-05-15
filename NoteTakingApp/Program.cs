@@ -3,11 +3,25 @@ using MongoDB.Driver.Core.Configuration;
 using MongoDB.Driver;
 using System;
 using System.Diagnostics;
+using System.Timers;
 
 namespace NoteTakingApp
 {
     internal static class Program
     {
+        private static string _dbUser = "tim4monkey";
+        private static string _dbPass = "timatoot";
+
+        public static string DbUser
+        {
+            get { return _dbUser; }
+            set { _dbUser = value; }
+        }
+        public static string DbPass
+        {
+            get { return _dbPass; }
+            set { _dbPass = value; }
+        }
 
         /// <summary>
         ///  The main entry point for the application.
@@ -15,9 +29,15 @@ namespace NoteTakingApp
         [STAThread]
         static void Main()
         {
-            // To customize application configuration such as set high DPI settings or default font,
-            // see https://aka.ms/applicationconfiguration.
-            const string connectionUri = "mongodb+srv://tim4monkey:timatoot@noteapptim.9l2spze.mongodb.net/?authSource=admin";
+            CheckConnected();
+
+            ApplicationConfiguration.Initialize();
+            Application.Run(new Form1());
+        }
+
+        public static void CheckConnected()
+        {
+            string connectionUri = $"mongodb+srv://{_dbUser}:{_dbPass}@noteapptim.9l2spze.mongodb.net/?authSource=admin";
             var settings = MongoClientSettings.FromConnectionString(connectionUri);
             // Set the ServerApi field of the settings object to Stable API version 1
             settings.ServerApi = new ServerApi(ServerApiVersion.V1);
@@ -27,25 +47,12 @@ namespace NoteTakingApp
             try
             {
                 var result = client.GetDatabase("admin").RunCommand<BsonDocument>(new BsonDocument("ping", 1));
-                Console.WriteLine("Pinged your deployment. You successfully connected to MongoDB!");
+                Debug.WriteLine("Pinged your deployment. You successfully connected to MongoDB!");
             }
             catch (Exception ex)
             {
-                Console.WriteLine(ex);
+                Debug.WriteLine(ex);
             }
-
-            /*string atlas = "mongodb + srv://tim4monkey:%40ItzJust2Easy@noteapptim.9l2spze.mongodb.net/test";
-            MongoClient dbClient = new MongoClient(settings);
-            var dbList = dbClient.ListDatabases().ToList();
-
-            Debug.WriteLine("The list of databases on this server is: ");
-            foreach (var db in dbList)
-            {
-                Debug.WriteLine(db);
-            }*/
-
-            ApplicationConfiguration.Initialize();
-            Application.Run(new Form1());
         }
     }
 }
