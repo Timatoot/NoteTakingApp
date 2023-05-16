@@ -12,6 +12,8 @@ namespace NoteTakingApp
         private static string _dbUser = "tim4monkey";
         private static string _dbPass = "timatoot";
 
+        private static System.Timers.Timer tymur;
+
         public static string DbUser
         {
             get { return _dbUser; }
@@ -31,6 +33,11 @@ namespace NoteTakingApp
         {
             CheckConnected();
 
+            tymur = new System.Timers.Timer(5000); // Set up the timer for 5 seconds.
+            tymur.Elapsed += TymurElapsed;
+            tymur.AutoReset = true;
+            tymur.Enabled = true;
+
             ApplicationConfiguration.Initialize();
             Application.Run(new Form1());
         }
@@ -46,13 +53,22 @@ namespace NoteTakingApp
             // Send a ping to confirm a successful connection
             try
             {
-                var result = client.GetDatabase("admin").RunCommand<BsonDocument>(new BsonDocument("ping", 1));
+                var result = client.GetDatabase("NoteApp").RunCommand<BsonDocument>(new BsonDocument("ping", 1));
                 Debug.WriteLine("Pinged your deployment. You successfully connected to MongoDB!");
             }
             catch (Exception ex)
             {
                 Debug.WriteLine(ex);
             }
+
+          
+        }
+        private static void TymurElapsed(Object source, ElapsedEventArgs e)
+        {
+            var form = new Form1();
+            Debug.WriteLine("Saving...");
+            form.WriteDB();
+            Debug.WriteLine("Saved!");
         }
     }
 }

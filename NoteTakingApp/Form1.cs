@@ -32,9 +32,8 @@ namespace NoteTakingApp
 
         string dbUser = Program.DbUser;
         string dbPass = Program.DbPass;
-
-        static string StaticDBUser = Program.DbUser;
-        static string StaticDBPass = Program.DbPass;
+        string dbName = "NoteApp";
+        string dbCollection = "Notes";
 
         AnchorStyles leftNoteAnchor = AnchorStyles.Top | AnchorStyles.Left;
         AnchorStyles rightNoteAnchor = AnchorStyles.Top | AnchorStyles.Right;
@@ -71,8 +70,8 @@ namespace NoteTakingApp
         public void WriteDB()
         {
             var client = new MongoClient($"mongodb+srv://{dbUser}:{dbPass}@noteapptim.9l2spze.mongodb.net/?authSource=admin");
-            var database = client.GetDatabase("NoteApp");
-            var collection = database.GetCollection<BsonDocument>("Notes");
+            var database = client.GetDatabase(dbName);
+            var collection = database.GetCollection<BsonDocument>(dbCollection);
             var objectId = new ObjectId("645d1530a6311621926eb9b5");
 
             var filter = Builders<BsonDocument>.Filter.Eq("_id", objectId);
@@ -96,9 +95,11 @@ namespace NoteTakingApp
 
         public static string ReadDB()
         {
-            var client = new MongoClient($"mongodb+srv://{StaticDBUser}:{StaticDBPass}@noteapptim.9l2spze.mongodb.net/?authSource=admin");
-            var database = client.GetDatabase("NoteApp");
-            var collection = database.GetCollection<BsonDocument>("Notes");
+            var form = new Form1();
+
+            var client = new MongoClient($"mongodb+srv://{form.dbUser}:{form.dbPass}@noteapptim.9l2spze.mongodb.net/?authSource=admin");
+            var database = client.GetDatabase(form.dbName);
+            var collection = database.GetCollection<BsonDocument>(form.dbCollection);
             var objectId = new ObjectId("645d1530a6311621926eb9b5");
             var filter = Builders<BsonDocument>.Filter.Eq("_id", objectId);
 
