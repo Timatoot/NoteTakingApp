@@ -40,10 +40,9 @@ namespace NoteTakingApp
 
         TextBox note;
         Button deleteButton;
-        static string json = ReadDB();
+        static string json;
 
-        Dictionary<string, string> notesDic = JsonConvert.DeserializeObject<Dictionary<string, string>>(json) 
-            ?? new Dictionary<string, string>();
+        Dictionary<string, string> notesDic;
 
         const int MAX_NOTES = 19;
         int noteNum = 0;
@@ -62,6 +61,15 @@ namespace NoteTakingApp
 
         public Form1()
         {
+            dbUser = Program.DbUser;
+            dbPass = Program.DbPass;
+            dbName = "NoteApp";
+            dbCollection = "Notes";
+
+            json = ReadDB(dbUser, dbPass, dbName, dbCollection);
+            notesDic = JsonConvert.DeserializeObject<Dictionary<string, string>>(json)
+                ?? new Dictionary<string, string>();
+
             InitializeComponent();
             width = ClientSize.Width;
             CheckNoteFile();
@@ -72,7 +80,7 @@ namespace NoteTakingApp
             var client = new MongoClient($"mongodb+srv://{dbUser}:{dbPass}@noteapptim.9l2spze.mongodb.net/?authSource=admin");
             var database = client.GetDatabase(dbName);
             var collection = database.GetCollection<BsonDocument>(dbCollection);
-            var objectId = new ObjectId("645d1530a6311621926eb9b5");
+            var objectId = new ObjectId("64679d70d2432a77fbaa9fe9");
 
             var filter = Builders<BsonDocument>.Filter.Eq("_id", objectId);
 
@@ -93,14 +101,12 @@ namespace NoteTakingApp
         }
 
 
-        public static string ReadDB()
+        public static string ReadDB(string dbUser, string dbPass, string dbName, string dbCollection)
         {
-            var form = new Form1();
-
-            var client = new MongoClient($"mongodb+srv://{form.dbUser}:{form.dbPass}@noteapptim.9l2spze.mongodb.net/?authSource=admin");
-            var database = client.GetDatabase(form.dbName);
-            var collection = database.GetCollection<BsonDocument>(form.dbCollection);
-            var objectId = new ObjectId("645d1530a6311621926eb9b5");
+            var client = new MongoClient($"mongodb+srv://{dbUser}:{dbPass}@noteapptim.9l2spze.mongodb.net/?authSource=admin");
+            var database = client.GetDatabase(dbName);
+            var collection = database.GetCollection<BsonDocument>(dbCollection);
+            var objectId = new ObjectId("64679d70d2432a77fbaa9fe9");
             var filter = Builders<BsonDocument>.Filter.Eq("_id", objectId);
 
             // Define a projection that excludes the '_id' field.

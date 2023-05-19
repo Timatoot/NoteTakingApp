@@ -4,6 +4,7 @@ using MongoDB.Driver;
 using System;
 using System.Diagnostics;
 using System.Timers;
+using System.Windows.Forms;
 
 namespace NoteTakingApp
 {
@@ -32,13 +33,14 @@ namespace NoteTakingApp
         static void Main()
         {
             CheckConnected();
-
-            tymur = new System.Timers.Timer(5000); // Set up the timer for 5 seconds.
+           /* tymur = new System.Timers.Timer(5000); // Set up the timer for 5 seconds.
             tymur.Elapsed += TymurElapsed;
             tymur.AutoReset = true;
-            tymur.Enabled = true;
+            tymur.Enabled = true;*/
 
             ApplicationConfiguration.Initialize();
+            var form = new Form1();
+            form.WriteDB();
             Application.Run(new Form1());
         }
 
@@ -63,12 +65,12 @@ namespace NoteTakingApp
 
           
         }
-        private static void TymurElapsed(Object source, ElapsedEventArgs e)
+        /*private static void TymurElapsed(Object source, ElapsedEventArgs e)
         {
             var form = new Form1();
             Debug.WriteLine("Saving...");
             form.WriteDB();
             Debug.WriteLine("Saved!");
-        }
+        }*/
     }
 }
