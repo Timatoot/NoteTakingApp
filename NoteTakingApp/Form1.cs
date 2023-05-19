@@ -30,10 +30,10 @@ namespace NoteTakingApp
             int nHeightEllipse // height of ellipse
         );
 
-        string dbUser = Program.DbUser;
-        string dbPass = Program.DbPass;
-        string dbName = "NoteApp";
-        string dbCollection = "Notes";
+        string dbUser;
+        string dbPass;
+        string dbName;
+        string dbCollection;
 
         AnchorStyles leftNoteAnchor = AnchorStyles.Top | AnchorStyles.Left;
         AnchorStyles rightNoteAnchor = AnchorStyles.Top | AnchorStyles.Right;
