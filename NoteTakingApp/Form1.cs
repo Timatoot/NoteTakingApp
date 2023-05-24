@@ -73,6 +73,7 @@ namespace NoteTakingApp
             InitializeComponent();
             width = ClientSize.Width;
             CheckNoteFile();
+            FormClosed += OnFormClose;
         }
 
         public void WriteDB()
@@ -316,6 +317,10 @@ namespace NoteTakingApp
             }
             noteNum = 0;
             CheckNoteFile();
+        }
+        private void OnFormClose(object sender, FormClosedEventArgs e)
+        {
+            WriteDB();
         }
     }
 }
