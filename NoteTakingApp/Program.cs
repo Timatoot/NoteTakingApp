@@ -33,10 +33,10 @@ namespace NoteTakingApp
         static void Main()
         {
             CheckConnected();
-           /* tymur = new System.Timers.Timer(5000); // Set up the timer for 5 seconds.
+            tymur = new System.Timers.Timer(10000);
             tymur.Elapsed += TymurElapsed;
             tymur.AutoReset = true;
-            tymur.Enabled = true;*/
+            tymur.Enabled = true;
 
             ApplicationConfiguration.Initialize();
             var form = new Form1();
@@ -53,11 +53,8 @@ namespace NoteTakingApp
         {
             string connectionUri = $"mongodb+srv://{_dbUser}:{_dbPass}@noteapptim.9l2spze.mongodb.net/?authSource=admin";
             var settings = MongoClientSettings.FromConnectionString(connectionUri);
-            // Set the ServerApi field of the settings object to Stable API version 1
             settings.ServerApi = new ServerApi(ServerApiVersion.V1);
-            // Create a new client and connect to the server
             var client = new MongoClient(settings);
-            // Send a ping to confirm a successful connection
             try
             {
                 var result = client.GetDatabase("NoteApp").RunCommand<BsonDocument>(new BsonDocument("ping", 1));
@@ -67,15 +64,11 @@ namespace NoteTakingApp
             {
                 Debug.WriteLine(ex);
             }
-
-          
         }
-        /*private static void TymurElapsed(Object source, ElapsedEventArgs e)
+        private static void TymurElapsed(Object source, ElapsedEventArgs e)
         {
             var form = new Form1();
-            Debug.WriteLine("Saving...");
             form.WriteDB();
-            Debug.WriteLine("Saved!");
-        }*/
+        }
     }
 }
