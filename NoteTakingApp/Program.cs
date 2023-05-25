@@ -40,7 +40,12 @@ namespace NoteTakingApp
 
             ApplicationConfiguration.Initialize();
             var form = new Form1();
-            form.WriteDB();
+            try
+            {
+                form.WriteDB();
+            }
+            catch (Exception ex)
+            {}
             Application.Run(new Form1());
         }
 

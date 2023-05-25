@@ -101,7 +101,6 @@ namespace NoteTakingApp
             }
         }
 
-
         public static string ReadDB(string dbUser, string dbPass, string dbName, string dbCollection)
         {
             var client = new MongoClient($"mongodb+srv://{dbUser}:{dbPass}@noteapptim.9l2spze.mongodb.net/?authSource=admin");
@@ -119,7 +118,6 @@ namespace NoteTakingApp
             return jsons;
         }
 
-
         /// <summary>
         /// Runs when the form is loaded
         /// </summary>
@@ -129,6 +127,12 @@ namespace NoteTakingApp
         {
             AddNote.Region = Region.FromHrgn(CreateRoundRectRgn(0, 0, AddNote.Width, AddNote.Height, 20, 20));
             NoteTitle.Region = Region.FromHrgn(CreateRoundRectRgn(1, 0, NoteTitle.Width, NoteTitle.Height, 20, 20));
+
+            if (!File.Exists("Note.json"))   
+            {
+
+                File.WriteAllText("Note.json", JsonConvert.SerializeObject(notesDic));
+            }
         }
 
         /// <summary>
