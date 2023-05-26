@@ -75,7 +75,7 @@ namespace NoteTakingApp
 
             var filter = Builders<BsonDocument>.Filter.Eq("_id", id);
 
-            string jsonFilePath = "C:\\Users\\Tim\\source\\repos\\NoteTakingApp\\NoteTakingApp\\bin\\Debug\\net6.0-windows\\Note.json";
+            string jsonFilePath = "Note.json";
             JObject json = JObject.Parse(File.ReadAllText(jsonFilePath));
 
             BsonDocument bson = BsonDocument.Parse(json.ToString());
