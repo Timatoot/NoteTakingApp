@@ -12,6 +12,7 @@ namespace NoteTakingApp
     {
         private static string _dbUser = "tim4monkey";
         private static string _dbPass = "timatoot";
+        public static ObjectId objectId = new ObjectId("64679d70d2432a77fbaa9fe8");
 
         private static System.Timers.Timer tymur;
 
@@ -40,9 +41,10 @@ namespace NoteTakingApp
 
             ApplicationConfiguration.Initialize();
             var form = new Form1();
+            objectId = form.CheckObjectId(objectId);
             try
             {
-                form.WriteDB();
+                form.WriteDB(objectId);
             }
             catch (Exception ex)
             {}
@@ -68,7 +70,7 @@ namespace NoteTakingApp
         private static void TymurElapsed(Object source, ElapsedEventArgs e)
         {
             var form = new Form1();
-            form.WriteDB();
+            form.WriteDB(objectId);
         }
     }
 }

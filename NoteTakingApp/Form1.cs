@@ -30,10 +30,11 @@ namespace NoteTakingApp
             int nHeightEllipse // height of ellipse
         );
 
-        string dbUser;
-        string dbPass;
-        string dbName;
-        string dbCollection;
+        string dbUser = Program.DbUser;
+        string dbPass = Program.DbPass;
+        string dbName = "NoteApp";
+        string dbCollection = "Notes";
+        ObjectId objectId = Program.objectId;
 
         AnchorStyles leftNoteAnchor = AnchorStyles.Top | AnchorStyles.Left;
         AnchorStyles rightNoteAnchor = AnchorStyles.Top | AnchorStyles.Right;
@@ -61,29 +62,18 @@ namespace NoteTakingApp
 
         public Form1()
         {
-            dbUser = Program.DbUser;
-            dbPass = Program.DbPass;
-            dbName = "NoteApp";
-            dbCollection = "Notes";
-
-            json = ReadDB(dbUser, dbPass, dbName, dbCollection);
-            notesDic = JsonConvert.DeserializeObject<Dictionary<string, string>>(json)
-                ?? new Dictionary<string, string>();
-
             InitializeComponent();
             width = ClientSize.Width;
-            CheckNoteFile();
             FormClosed += OnFormClose;
         }
 
-        public void WriteDB()
+        public void WriteDB(ObjectId id)
         {
             var client = new MongoClient($"mongodb+srv://{dbUser}:{dbPass}@noteapptim.9l2spze.mongodb.net/?authSource=admin");
             var database = client.GetDatabase(dbName);
             var collection = database.GetCollection<BsonDocument>(dbCollection);
-            var objectId = new ObjectId("64679d70d2432a77fbaa9fe9");
 
-            var filter = Builders<BsonDocument>.Filter.Eq("_id", objectId);
+            var filter = Builders<BsonDocument>.Filter.Eq("_id", id);
 
             string jsonFilePath = "C:\\Users\\Tim\\source\\repos\\NoteTakingApp\\NoteTakingApp\\bin\\Debug\\net6.0-windows\\Note.json";
             JObject json = JObject.Parse(File.ReadAllText(jsonFilePath));
@@ -95,18 +85,13 @@ namespace NoteTakingApp
             {
                 collection.ReplaceOne(filter, bson);
             }
-            else
-            {
-                bson["_id"] = ObjectId.GenerateNewId();
-            }
         }
 
-        public static string ReadDB(string dbUser, string dbPass, string dbName, string dbCollection)
+        public static string ReadDB(string dbUser, string dbPass, string dbName, string dbCollection, ObjectId objectId)
         {
             var client = new MongoClient($"mongodb+srv://{dbUser}:{dbPass}@noteapptim.9l2spze.mongodb.net/?authSource=admin");
             var database = client.GetDatabase(dbName);
             var collection = database.GetCollection<BsonDocument>(dbCollection);
-            var objectId = new ObjectId("64679d70d2432a77fbaa9fe9");
             var filter = Builders<BsonDocument>.Filter.Eq("_id", objectId);
 
             // Define a projection that excludes the '_id' field.
@@ -116,6 +101,31 @@ namespace NoteTakingApp
             var jsons = document.ToJson();
 
             return jsons;
+        }
+
+        public ObjectId CheckObjectId(ObjectId id)
+        {
+            var client = new MongoClient($"mongodb+srv://{dbUser}:{dbPass}@noteapptim.9l2spze.mongodb.net/?authSource=admin");
+            var database = client.GetDatabase(dbName);
+            var collection = database.GetCollection<BsonDocument>(dbCollection);
+
+            ObjectId newId;
+            var filter = Builders<BsonDocument>.Filter.Eq("_id", id);
+            var found = collection.Find(filter).FirstOrDefault();
+            if (found == null)
+            {
+                var document = new BsonDocument()
+                {
+                    { "_id", ObjectId.GenerateNewId() }
+                };
+                collection.InsertOne(document);
+                newId = document["_id"].AsObjectId;
+            }
+            else
+            {
+                newId = found["_id"].AsObjectId;
+            }
+            return newId;
         }
 
         /// <summary>
@@ -128,9 +138,14 @@ namespace NoteTakingApp
             AddNote.Region = Region.FromHrgn(CreateRoundRectRgn(0, 0, AddNote.Width, AddNote.Height, 20, 20));
             NoteTitle.Region = Region.FromHrgn(CreateRoundRectRgn(1, 0, NoteTitle.Width, NoteTitle.Height, 20, 20));
 
+            json = ReadDB(dbUser, dbPass, dbName, dbCollection, objectId);
+            notesDic = JsonConvert.DeserializeObject<Dictionary<string, string>>(json)
+                ?? new Dictionary<string, string>();
+
+            CheckNoteFile();
+
             if (!File.Exists("Note.json"))   
             {
-
                 File.WriteAllText("Note.json", JsonConvert.SerializeObject(notesDic));
             }
         }
@@ -324,7 +339,7 @@ namespace NoteTakingApp
         }
         private void OnFormClose(object sender, FormClosedEventArgs e)
         {
-            WriteDB();
+            WriteDB(objectId);
         }
     }
 }
