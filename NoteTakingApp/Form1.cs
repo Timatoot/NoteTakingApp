@@ -32,8 +32,8 @@ namespace NoteTakingApp
 
         string dbUser = Program.DbUser;
         string dbPass = Program.DbPass;
-        string dbName = "NoteApp";
-        string dbCollection = "Notes";
+        string dbName = Program.DbName;
+        string dbCollection = Program.DbCollection;
         ObjectId objectId = Program.objectId;
 
         AnchorStyles leftNoteAnchor = AnchorStyles.Top | AnchorStyles.Left;

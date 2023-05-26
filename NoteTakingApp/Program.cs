@@ -12,7 +12,9 @@ namespace NoteTakingApp
     {
         private static string _dbUser = "tim4monkey";
         private static string _dbPass = "timatoot";
-        public static ObjectId objectId = new ObjectId("64679d70d2432a77fbaa9fe8");
+        private static string _dbName = "NoteApp";
+        private static string _dbCollection = "Notes";
+        public static ObjectId objectId = new ObjectId("64679d70d2432a77fbaa9fe9");
 
         private static System.Timers.Timer tymur;
 
@@ -25,6 +27,16 @@ namespace NoteTakingApp
         {
             get { return _dbPass; }
             set { _dbPass = value; }
+        }
+        public static string DbName
+        {
+            get { return _dbName; }
+            set { _dbName = value; }
+        }
+        public static string DbCollection
+        {
+            get { return _dbCollection; }
+            set { _dbCollection = value; }
         }
 
         /// <summary>
