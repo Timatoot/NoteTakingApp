@@ -10,8 +10,8 @@ namespace NoteTakingApp
 {
     internal static class Program
     {
-        private static string _dbUser = "tim4monkey";
-        private static string _dbPass = "timatoot";
+        private static string _dbUser = discord;
+        private static string _dbPass = discord;
         private static string _dbName = "NoteApp";
         private static string _dbCollection = "Notes";
         public static ObjectId objectId = new ObjectId("64679d70d2432a77fbaa9fe9");
